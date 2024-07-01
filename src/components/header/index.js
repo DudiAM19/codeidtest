@@ -1,17 +1,42 @@
 import React from 'react';
-import {Dimensions, Text, TextInput, View} from 'react-native';
+import {
+  Dimensions,
+  Text,
+  TextInput,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from '../icon';
+import {setDetailMovie} from '../../redux/action/movie-action';
 
-const Header = ({title, search, onChangeText}) => {
+const Header = ({title, search, onChangeText, navigation, dispatch}) => {
   return (
     <View
       style={{
         paddingHorizontal: 20,
         paddingTop: 50,
-        flexDirection: search ? 'row' : 'column',
+        flexDirection: search ? 'row' : 'row',
         justifyContent: search ? 'space-between' : 'flex-start',
         alignItems: 'center',
       }}>
+      {!search && (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack(), dispatch(setDetailMovie(undefined));
+          }}>
+          <Icon
+            style={{
+              fontSize: 20,
+              color: 'black',
+              marginTop: -4,
+              marginRight: Dimensions.get('window').width * 0.03,
+            }}
+            type="Ionicons"
+            name="chevron-back"
+          />
+        </TouchableOpacity>
+      )}
       <Text
         style={{
           fontFamily: 'Poppins-SemiBold',
@@ -47,6 +72,8 @@ const Header = ({title, search, onChangeText}) => {
               paddingTop: 4,
               paddingBottom: 1,
               color: 'black',
+              marginTop: -5,
+              paddingLeft: 5
               // marginBottom: -Dimensions.get('window').width * 0.01,
               // justifyContent: 'center',
               // alignItems: 'center',

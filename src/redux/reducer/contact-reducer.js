@@ -2,19 +2,25 @@ import {
   IS_LOADING,
   SET_ERROR,
   SET_LOADING_MENU,
-  SET_DATA_CONTACT,
-  SET_DETAIL_CONTACT,
-} from '../action/contact-action';
+  SET_DATA_MOVIE,
+  SET_DETAIL_MOVIE,
+  SET_DATA_LIKED,
+  SET_LOAD_LIKED,
+  SET_DATA_FAV,
+} from '../action/movie-action';
 
 const initialState = {
-  dataContact: undefined,
+  dataMovie: undefined,
   isLoading: false,
   isLoadingMenu: false,
   errorMessage: undefined,
-  detailContact: undefined,
+  detailMovie: undefined,
+  isLiked: false,
+  loadLike: false,
+  dataFavorite: undefined,
 };
 
-const contactReducer = (state = initialState, {payload, type}) => {
+const movieReducer = (state = initialState, {payload, type}) => {
   switch (type) {
     case IS_LOADING:
       return {
@@ -31,19 +37,34 @@ const contactReducer = (state = initialState, {payload, type}) => {
         ...state,
         isLoadingMenu: payload,
       };
-    case SET_DATA_CONTACT:
+    case SET_DATA_MOVIE:
       return {
         ...state,
-        dataContact: payload,
+        dataMovie: payload,
       };
-    case SET_DETAIL_CONTACT:
+    case SET_DETAIL_MOVIE:
       return {
         ...state,
-        detailContact: payload,
+        detailMovie: payload,
+      };
+    case SET_DATA_LIKED:
+      return {
+        ...state,
+        isLiked: payload,
+      };
+    case SET_LOAD_LIKED:
+      return {
+        ...state,
+        loadLike: payload,
+      };
+    case SET_DATA_FAV:
+      return {
+        ...state,
+        dataFavorite: payload,
       };
     default:
       return state;
   }
 };
 
-export default contactReducer;
+export default movieReducer;

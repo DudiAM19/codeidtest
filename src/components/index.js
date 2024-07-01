@@ -6,6 +6,7 @@ import CustomModal from './modal';
 import ModalDelete from './modaldelete';
 import ModalDetail from './modaldetail';
 import ModalEdit from './modaledit';
+import ToastFailed from './toastfailed';
 
 export {
   Icon,
@@ -16,4 +17,5 @@ export {
   ModalDelete,
   ModalDetail,
   ModalEdit,
+  ToastFailed,
 };

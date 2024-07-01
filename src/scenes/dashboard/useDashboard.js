@@ -1,141 +1,109 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {Alert} from 'react-native';
 import {
-  handleAddContact,
-  handleDelete,
-  handleDetailContact,
-  handleEditContact,
-  handleGetContact,
-  setDataContact,
-} from '../../redux/action/contact-action';
-import {launchImageLibrary} from 'react-native-image-picker';
+  handleGetDataFav,
+  handleGetDetailMovie,
+  handleGetMovie,
+  handlePostFav,
+  setDataMovie,
+} from '../../redux/action/movie-action';
 
 const useDashboard = navigation => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
-  const [visibleDelete, setVisibleDelete] = useState(false);
-  const [visibleDetail, setVisibleDetail] = useState(false);
-  const [visibleEdit, setVisibleEdit] = useState(false);
-  const [visibleAdd, setVisibleAdd] = useState(false);
-  const [dataDetail, setDataDetail] = useState(false);
-  const [valueFirstName, setValueFirstName] = useState(dataDetail?.firstName);
-  const [valueLastName, setValueLastName] = useState(dataDetail?.lastName);
-  const [age, setAge] = useState(dataDetail?.age);
-  const [image, setImage] = useState('');
-  const {dataContact, detailContact} = useSelector(
-    ({contactReducer}) => ({
-      dataContact: contactReducer.dataContact,
-      detailContact: contactReducer.detailContact,
-    }),
-    shallowEqual,
-  );
+  const [page, setPage] = useState(1);
+  const [uniqId, setUniqId] = useState(0);
+  const {dataMovie, isLoadingMenu, loadLike, isLiked, dataFavorite} =
+    useSelector(
+      ({movieReducer}) => ({
+        dataMovie: movieReducer.dataMovie,
+        isLoadingMenu: movieReducer.isLoadingMenu,
+        loadLike: movieReducer.loadLike,
+        isLiked: movieReducer.isLiked,
+        dataFavorite: movieReducer.dataFavorite,
+      }),
+      shallowEqual,
+    );
+
+  const [data, setData] = useState(dataMovie);
+  const arrTab = [
+    {
+      text: 'Home',
+      label: 'back',
+    },
+    {
+      text: 'Favorite',
+      label: 'next',
+    },
+  ];
   useEffect(() => {
-    if (dataContact === undefined) {
-      dispatch(handleGetContact());
+    if (data === undefined) {
+      dispatch(handleGetMovie(page.toString()));
+      dispatch(handleGetDataFav(page.toString()));
     }
-  }, [dataContact]);
+  }, [data]);
+
+  useEffect(() => {
+    uniqId === 0 ? setData(dataMovie) : setData(dataFavorite);
+  }, [uniqId, dataMovie, dataFavorite]);
+
+  const handleDetail = val => {
+    navigation.navigate('Detail', {
+      data: val.original_title,
+    });
+
+    dispatch(handleGetDetailMovie(val.id));
+  };
+
+  const handlePagenation = val => {
+    if (page === 1 && val === 'back') {
+      return null;
+    } else {
+      const num = val === 'back' ? page - 1 : page + 1;
+      setPage(num);
+      dispatch(setDataMovie(undefined));
+    }
+  };
+
+  const handlePressLike = val => {
+    const payload = {
+      media_type: 'movie',
+      media_id: val.id,
+      favorite: true,
+    };
+    dispatch(handlePostFav(payload));
+  };
 
   const filtered = !search
-    ? dataContact?.data
-    : dataContact?.data?.filter(l =>
-        l.firstName.toLowerCase().includes(search.toLowerCase()),
+    ? data?.results
+    : data?.results?.filter(l =>
+        l.original_title.toLowerCase().includes(search.toLowerCase()),
       );
 
-  const handleBtnDelete = () => {
-    setVisibleDelete(false);
-    dispatch(handleDelete(dataDetail?.id));
-    dispatch(setDataContact(undefined));
-  };
-
-  const handleDetail = value => {
-    setVisibleDetail(true);
-    dispatch(handleDetailContact(value.id));
-  };
-
-  const handleShowModalEdit = value => {
-    setDataDetail(value);
-    setVisibleEdit(true);
-  };
-
-  const handlePostEdit = () => {
-    const payload = {
-      firstName: valueFirstName,
-      lastName: valueLastName,
-      age: age,
-      photo: image,
-    };
-    setVisibleEdit(false);
-    dispatch(setDataContact(undefined));
-    dispatch(handleEditContact(dataDetail.id, payload));
-  };
-
-  const handlePostAddContact = () => {
-    const payload = {
-      firstName: valueFirstName === undefined ? '' : valueFirstName,
-      lastName: valueLastName === undefined ? '' : valueLastName,
-      age: age === undefined ? '' : age,
-      photo: 'image',
-    };
-    setValueFirstName('');
-    setValueLastName('');
-    setAge('');
-    setVisibleAdd(false);
-    dispatch(setDataContact(undefined));
-    dispatch(handleAddContact(payload));
-    dispatch(handleGetContact());
-  };
-
-  const handleEditPhoto = async () => {
-    try {
-      const options = {
-        saveToPhotos: true,
-        mediaType: 'photo',
-        includeBase64: false,
-        quality: 0.2,
-      };
-      const result = await launchImageLibrary(options);
-      if (result?.didCancel === true) {
-        console.log('cancel');
-      }
-      if (result?.assets) {
-        setImage(result?.assets[0]?.uri);
-
-        // dispatch(handlePostEditProfile('editphoto', formData));
-      }
-    } catch (error) {
-      console.log(error);
+  const handleTab = index => {
+    setUniqId(index);
+    setData(undefined)
+    if (index === 0) {
+      dispatch(handleGetMovie(page.toString()));
+    } else {
+      dispatch(handleGetDataFav(page.toString()));
     }
   };
-
   return {
-    dataContact,
     filtered,
     setSearch,
-    visibleDelete,
-    setVisibleDelete,
-    setDataDetail,
-    dataDetail,
-    handleBtnDelete,
+    arrTab,
+    uniqId,
+    setUniqId,
     handleDetail,
-    visibleDetail,
-    setVisibleDetail,
-    detailContact,
-    visibleEdit,
-    setVisibleEdit,
-    handleShowModalEdit,
-    handlePostEdit,
-    setValueFirstName,
-    setValueLastName,
-    setAge,
-    valueFirstName,
-    valueLastName,
-    age,
-    visibleAdd,
-    setVisibleAdd,
-    handlePostAddContact,
-    handleEditPhoto,
-    image,
+    isLoadingMenu,
+    handlePagenation,
+    page,
+    handlePressLike,
+    loadLike,
+    isLiked,
+    dispatch,
+    handleTab,
   };
 };
 export default useDashboard;

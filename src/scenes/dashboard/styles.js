@@ -44,4 +44,61 @@ export default StyleSheet.create({
   margintop: {
     marginTop: width * 0.1,
   },
+  tabsection: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    // marginTop: width * 0.05,
+
+    width: '100%',
+    justifyContent: 'center',
+    marginBottom: width * 0.03,
+    paddingBottom: 10,
+  },
+  tabbtn: (id, index) => ({
+    // marginHorizontal: width * 0.01,
+    borderBottomWidth: 1,
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: id === index ? '#4287f5' : 'black',
+    paddingBottom: 5,
+  }),
+  texttab: (id, index) => ({
+    fontFamily: 'Poppins-Medium',
+    fontSize: 13,
+    color: id === index ? '#4287f5' : 'black',
+  }),
+  pagesectino: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: width * 0.01,
+  },
+  icon: {
+    fontSize: 30,
+    marginBottom: -width * 0.02,
+    color: '#4287f5',
+  },
+  pagesection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  conteinermodal: {
+    paddingHorizontal: 20,
+    // paddingRight: 70,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textmodal: {
+    fontSize: 18,
+    fontFamily: 'Poppins-Regular',
+    color: 'black',
+  },
+  iconmodal: {
+    fontSize: 20,
+    color: '#047804',
+    marginTop: -5,
+    marginLeft: width * 0.03
+  },
 });
